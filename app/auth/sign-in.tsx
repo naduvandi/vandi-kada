@@ -8,6 +8,7 @@ export default function SignIn() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState('user');
   const { signIn } = useAuth();
 
   const handleSignIn = async () => {
@@ -22,10 +23,14 @@ export default function SignIn() {
 
     try {
       setLoading(true);
-      await signIn(email, password);
+      if (activeTab === 'vendor') {
+        await signIn(email, password);
+      } else {
+        await signIn(email, password);
+      }
       Toast.show({
         type: 'success',
-        text1: 'Welcome back!',
+        text1: `Welcome back${activeTab === 'vendor' ? ' Vendor' : ''}!`,
       });
     } catch (err) {
       Toast.show({
@@ -40,7 +45,36 @@ export default function SignIn() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Welcome Back</Text>
+      <View style={styles.tabContainer}>
+        <Pressable 
+          style={[
+            styles.tab, 
+            activeTab === 'user' && styles.activeTab
+          ]}
+          onPress={() => setActiveTab('user')}
+        >
+          <Text style={[
+            styles.tabText,
+            activeTab === 'user' && styles.activeTabText
+          ]}>User</Text>
+        </Pressable>
+        <Pressable 
+          style={[
+            styles.tab, 
+            activeTab === 'vendor' && styles.activeTab
+          ]}
+          onPress={() => setActiveTab('vendor')}
+        >
+          <Text style={[
+            styles.tabText,
+            activeTab === 'vendor' && styles.activeTabText
+          ]}>Vendor</Text>
+        </Pressable>
+      </View>
+
+      <Text style={styles.title}>
+        {activeTab === 'user' ? 'Welcome Back' : 'Vendor Sign In'}
+      </Text>
 
       <TextInput
         style={styles.input}
@@ -132,5 +166,30 @@ const styles = StyleSheet.create({
   },
   linkTextDisabled: {
     color: '#ccc',
+  },
+  tabContainer: {
+    flexDirection: 'row',
+    marginBottom: 24,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    overflow: 'hidden',
+  },
+  tab: {
+    flex: 1,
+    padding: 12,
+    alignItems: 'center',
+    backgroundColor: '#f5f5f5',
+  },
+  activeTab: {
+    backgroundColor: '#007AFF',
+  },
+  tabText: {
+    fontSize: 16,
+    color: '#666',
+  },
+  activeTabText: {
+    color: '#fff',
+    fontWeight: 'bold',
   },
 });
