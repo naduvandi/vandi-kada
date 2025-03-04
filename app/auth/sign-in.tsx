@@ -4,6 +4,15 @@ import { Link } from 'expo-router';
 import { useAuth } from '../../contexts/auth';
 import Toast from 'react-native-toast-message';
 
+interface InventoryItem {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  quantity: number;
+  category: string;
+}
+
 export default function SignIn() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
